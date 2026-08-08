@@ -1,0 +1,46 @@
+{
+  "month": "2026-03",
+  "n_rows": 150675,
+  "n_clients": 44,
+  "base_decline_rate": 0.3262,
+  "high_volume_cutoff_p90_imp_prev": 2042.0,
+  "expected_ctr_by_position_tier": {
+    "1-3": 0.00266,
+    "11-20": 0.00098,
+    "4-10": 0.00182
+  },
+  "archetypes": {
+    "high_volume_poor_position": {
+      "n": 3372,
+      "decline_rate": 0.5294,
+      "action": "flag_for_deeper_review",
+      "tier": 2
+    },
+    "low_ctr_for_position": {
+      "n": 30974,
+      "decline_rate": 0.337,
+      "action": "review_ctr_fix",
+      "tier": 1
+    },
+    "model_flags_declining_no_baseline_signal": {
+      "n": 7682,
+      "decline_rate": 0.3935,
+      "action": "monitor_closely",
+      "tier": 3
+    },
+    "monitor_default": {
+      "n": 32505,
+      "decline_rate": 0.2308,
+      "action": "monitor",
+      "tier": 5
+    },
+    "thin_evidence": {
+      "n": 76142,
+      "decline_rate": 0.3468,
+      "action": "wait_for_more_data",
+      "tier": 4
+    }
+  },
+  "actionable_now_pct": 22.8,
+  "random_seed": 42
+}
