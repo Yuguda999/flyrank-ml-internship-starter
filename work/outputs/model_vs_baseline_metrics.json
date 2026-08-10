@@ -1,0 +1,38 @@
+{
+  "month": "2026-03",
+  "split": "GroupShuffleSplit(client_hash_id, test_size=0.25, random_state=42)",
+  "test_rows": 14426,
+  "test_clients": 11,
+  "test_base_rate": 0.3655,
+  "rf_test_roc_auc": 0.5783,
+  "comparison": [
+    {
+      "method": "baseline (ML-07 rule)",
+      "precision@10": 0.5,
+      "precision@20": 0.6,
+      "precision@50": 0.56,
+      "precision@100": 0.54
+    },
+    {
+      "method": "logistic_regression",
+      "precision@10": 0.4,
+      "precision@20": 0.45,
+      "precision@50": 0.38,
+      "precision@100": 0.42
+    },
+    {
+      "method": "random_forest",
+      "precision@10": 0.3,
+      "precision@20": 0.35,
+      "precision@50": 0.44,
+      "precision@100": 0.45
+    },
+    {
+      "method": "gradient_boosting",
+      "precision@10": 0.5,
+      "precision@20": 0.5,
+      "precision@50": 0.5,
+      "precision@100": 0.44
+    }
+  ]
+}
