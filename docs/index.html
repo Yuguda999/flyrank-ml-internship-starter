@@ -3,37 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Which Content Should You Refresh First? — A Ranking Study on 9.8M Search Rows</title>
-<meta name="description" content="An independent research paper testing whether a learned model beats a transparent rule for prioritizing content refreshes, on FlyRank's pseudonymized internship search-performance dataset.">
+<title>Which Content Should Be Refreshed First? A Ranking Study on 9.8M Rows of Search Data</title>
+<meta name="description" content="A research paper testing whether a learned model outperforms a transparent rule for prioritizing content refreshes, using FlyRank's pseudonymized internship search-performance dataset.">
 <style>
   :root {
     --bg: #ffffff;
-    --bg-soft: #f6f7f9;
-    --text: #1b1f24;
-    --text-soft: #55606b;
-    --border: #e2e5e9;
-    --accent: #2c5f8a;
-    --accent-soft: #eaf1f7;
-    --good: #1e7a4c;
-    --bad: #b3401f;
-    --warn: #a0790a;
-    --code-bg: #eef1f4;
-    --shadow: 0 1px 3px rgba(0,0,0,0.06);
+    --bg-soft: #f7f7f5;
+    --text: #1a1a1a;
+    --text-soft: #565654;
+    --border: #d8d6d1;
+    --link: #1a4b8c;
+    --code-bg: #eeeeec;
+    --rule: #1a1a1a;
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #14171a;
-      --bg-soft: #1c2024;
-      --text: #e7eaee;
-      --text-soft: #a7b0ba;
-      --border: #2c3136;
-      --accent: #7fb2dd;
-      --accent-soft: #1e2a34;
-      --good: #4fbf82;
-      --bad: #e2694a;
-      --warn: #dbb24c;
-      --code-bg: #1e2226;
-      --shadow: 0 1px 3px rgba(0,0,0,0.3);
+      --bg: #16161a;
+      --bg-soft: #1d1d21;
+      --text: #e4e3df;
+      --text-soft: #a5a39c;
+      --border: #38373f;
+      --link: #8fb4e8;
+      --code-bg: #232228;
+      --rule: #e4e3df;
     }
   }
   * { box-sizing: border-box; }
@@ -42,181 +34,180 @@
     margin: 0;
     background: var(--bg);
     color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-    line-height: 1.65;
+    font-family: "Iowan Old Style", "Palatino Linotype", Georgia, "Times New Roman", serif;
+    font-size: 17px;
+    line-height: 1.62;
   }
-  .wrap { max-width: 780px; margin: 0 auto; padding: 0 20px; }
-  header.hero {
-    background: linear-gradient(160deg, var(--accent-soft), var(--bg));
-    border-bottom: 1px solid var(--border);
-    padding: 56px 0 40px;
+  .wrap { max-width: 700px; margin: 0 auto; padding: 0 22px; }
+  header.masthead {
+    border-bottom: 2px solid var(--rule);
+    padding: 44px 0 24px;
   }
   .kicker {
+    font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-size: 0.78rem;
-    color: var(--accent);
-    font-weight: 700;
-    margin-bottom: 14px;
+    letter-spacing: 0.09em;
+    font-size: 0.72rem;
+    color: var(--text-soft);
+    margin-bottom: 18px;
   }
   h1 {
-    font-size: 2.05rem;
-    line-height: 1.25;
-    margin: 0 0 16px;
-    letter-spacing: -0.01em;
+    font-size: 1.72rem;
+    line-height: 1.32;
+    margin: 0 0 14px;
+    font-weight: 700;
   }
   .byline {
+    font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
     color: var(--text-soft);
-    font-size: 0.95rem;
-    margin-bottom: 4px;
+    font-size: 0.88rem;
+    margin-bottom: 2px;
   }
-  .byline a { color: var(--accent); }
+  .byline a { color: var(--link); }
   nav.toc {
-    margin-top: 28px;
+    font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    margin-top: 22px;
     display: flex;
     flex-wrap: wrap;
-    gap: 8px 14px;
-    font-size: 0.85rem;
+    gap: 6px 12px;
+    font-size: 0.78rem;
   }
   nav.toc a {
     color: var(--text-soft);
     text-decoration: none;
-    border-bottom: 1px dotted var(--border);
+    border-bottom: 1px solid var(--border);
   }
-  nav.toc a:hover { color: var(--accent); border-color: var(--accent); }
-  main { padding: 8px 0 80px; }
-  section { padding: 40px 0; border-bottom: 1px solid var(--border); }
+  nav.toc a:hover { color: var(--link); border-color: var(--link); }
+  main { padding: 6px 0 60px; }
+  section { padding: 34px 0; border-bottom: 1px solid var(--border); }
   section:last-of-type { border-bottom: none; }
   h2 {
-    font-size: 1.4rem;
-    margin: 0 0 18px;
-    display: flex;
-    align-items: baseline;
-    gap: 10px;
+    font-size: 1.22rem;
+    margin: 0 0 16px;
+    font-weight: 700;
   }
-  h2 .num { color: var(--accent); font-size: 1rem; font-weight: 700; }
-  h3 { font-size: 1.08rem; margin: 28px 0 10px; }
-  p { margin: 0 0 16px; }
-  .lede {
-    font-size: 1.12rem;
+  h2 .num { font-weight: 400; color: var(--text-soft); margin-right: 6px; }
+  h3 {
+    font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 0.88rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
     color: var(--text-soft);
+    margin: 26px 0 8px;
+    font-weight: 600;
   }
+  p { margin: 0 0 15px; }
+  .lede { }
   code, .mono {
     font-family: "SF Mono", Menlo, Consolas, monospace;
     background: var(--code-bg);
-    padding: 0.12em 0.4em;
-    border-radius: 4px;
-    font-size: 0.88em;
+    padding: 0.1em 0.35em;
+    border-radius: 3px;
+    font-size: 0.85em;
   }
-  ul, ol { padding-left: 1.3em; margin: 0 0 16px; }
-  li { margin-bottom: 8px; }
-  .callout {
-    background: var(--bg-soft);
-    border: 1px solid var(--border);
-    border-left: 4px solid var(--accent);
-    border-radius: 6px;
-    padding: 16px 18px;
+  ul, ol { padding-left: 1.4em; margin: 0 0 15px; }
+  li { margin-bottom: 7px; }
+  blockquote {
     margin: 20px 0;
+    padding: 2px 0 2px 18px;
+    border-left: 2px solid var(--border);
+    color: var(--text-soft);
     font-size: 0.96rem;
   }
-  .callout.finding { border-left-color: var(--bad); }
-  .callout.finding strong { color: var(--bad); }
-  .stat-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-    gap: 12px;
-    margin: 20px 0;
+  .stat-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 18px 0 20px;
+    font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 0.86rem;
   }
-  .stat {
-    background: var(--bg-soft);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 14px 16px;
-    box-shadow: var(--shadow);
+  .stat-table td {
+    padding: 7px 4px;
+    border-bottom: 1px solid var(--border);
   }
-  .stat .n { font-size: 1.35rem; font-weight: 700; color: var(--accent); }
-  .stat .label { font-size: 0.78rem; color: var(--text-soft); margin-top: 2px; }
-  figure { margin: 26px 0; }
+  .stat-table td.n { font-weight: 700; text-align: right; width: 1%; padding-right: 16px; white-space: nowrap; }
+  .stat-table td.label { color: var(--text-soft); }
+  figure { margin: 24px 0; }
   figure img {
     width: 100%;
     max-width: 100%;
-    border-radius: 8px;
     border: 1px solid var(--border);
     background: #fff;
     display: block;
   }
   figcaption {
-    font-size: 0.86rem;
+    font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 0.82rem;
     color: var(--text-soft);
     margin-top: 8px;
-    font-style: italic;
+    line-height: 1.5;
   }
   .table-scroll {
     overflow-x: auto;
     margin: 16px 0;
-    border-radius: 6px;
   }
-  table {
+  table.data {
     width: 100%;
-    min-width: 480px;
+    min-width: 460px;
     border-collapse: collapse;
-    font-size: 0.88rem;
+    font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 0.85rem;
     margin: 0;
   }
-  table th, table td {
-    padding: 8px 10px;
+  table.data th, table.data td {
+    padding: 7px 10px;
     border-bottom: 1px solid var(--border);
     text-align: left;
   }
-  table th { color: var(--text-soft); font-weight: 600; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.03em; }
-  table tr.win td { color: var(--good); font-weight: 600; }
-  .tag {
-    display: inline-block;
-    font-size: 0.7rem;
-    font-weight: 700;
+  table.data th {
+    color: var(--text-soft);
+    font-weight: 600;
+    font-size: 0.74rem;
     text-transform: uppercase;
     letter-spacing: 0.03em;
-    padding: 2px 8px;
-    border-radius: 4px;
-    background: var(--accent-soft);
-    color: var(--accent);
+    border-bottom: 1px solid var(--rule);
   }
-  .limits-list li::marker { color: var(--warn); }
+  table.data tr.win td { font-weight: 700; }
   footer {
-    padding: 40px 0 60px;
+    padding: 36px 0 60px;
     color: var(--text-soft);
     font-size: 0.88rem;
   }
-  footer a { color: var(--accent); }
+  footer a { color: var(--link); }
+  .repro-links {
+    font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 0.86rem;
+  }
   .repro-links a {
     display: block;
     margin-bottom: 6px;
-    font-size: 0.9rem;
+    color: var(--link);
   }
   @media (max-width: 600px) {
-    h1 { font-size: 1.6rem; }
-    header.hero { padding: 40px 0 32px; }
-    section { padding: 30px 0; }
+    body { font-size: 16px; }
+    h1 { font-size: 1.4rem; }
+    header.masthead { padding: 32px 0 20px; }
+    section { padding: 26px 0; }
   }
 </style>
 </head>
 <body>
 
-<header class="hero">
+<header class="masthead">
   <div class="wrap">
-    <div class="kicker">Independent Research &middot; FlyRank ML Internship Capstone</div>
-    <h1>Which Content Should You Refresh First? Testing a Learned Model Against a Transparent Rule on 9.8M Rows of Real Search Data</h1>
-    <p class="byline">By Yuguda &middot; <a href="https://github.com/Yuguda999/flyrank-ml-internship-starter" target="_blank" rel="noopener">source repo</a> &middot; March 2026 data</p>
+    <div class="kicker">Research paper &middot; FlyRank ML Internship Capstone &middot; March 2026</div>
+    <h1>Which Content Should Be Refreshed First? A Ranking Study on 9.8 Million Rows of Search Data</h1>
+    <p class="byline">Yuguda &middot; <a href="https://github.com/Yuguda999/flyrank-ml-internship-starter" target="_blank" rel="noopener">source repository</a></p>
     <nav class="toc">
       <a href="#abstract">Abstract</a>
-      <a href="#intro">Introduction</a>
-      <a href="#data">Data</a>
-      <a href="#method">Methodology</a>
-      <a href="#results">Results</a>
-      <a href="#limits">Limitations</a>
-      <a href="#recs">Recommendations</a>
-      <a href="#repro">Reproducibility</a>
-      <a href="#credit">Data Credit</a>
+      <a href="#intro">1. Introduction</a>
+      <a href="#data">2. Data</a>
+      <a href="#method">3. Methodology</a>
+      <a href="#results">4. Results</a>
+      <a href="#limits">5. Limitations</a>
+      <a href="#recs">6. Recommendations</a>
+      <a href="#repro">7. Reproducibility</a>
+      <a href="#credit">Acknowledgments</a>
     </nav>
   </div>
 </header>
@@ -224,221 +215,225 @@
 <main class="wrap">
 
   <section id="abstract">
-    <h2><span class="num">§0</span> Abstract</h2>
+    <h2>Abstract</h2>
     <p class="lede">
-      Which content pages should a client's SEO team review first for refresh? Using FlyRank's
-      pseudonymized internship warehouse — 9.8 million daily search-performance rows across 44
-      clients, drawn from one mid-panel month (March 2026) — this paper builds a transparent
-      CTR-and-volume rule baseline and tests three learned models (logistic regression, random
-      forest, gradient boosting) against it under an honest, client-grouped validation split.
-      The headline result is a negative one: none of the three models beat the hand-written
-      baseline at any evaluated cutoff, and the strongest model's own held-out ROC-AUC (0.58)
-      barely clears chance. The baseline rule — and a five-archetype action playbook built on
-      top of it, not the underperforming model — powers the paper's ranked content-review
-      recommendations. The output is decision-support: a triage queue a human reviews, never an
-      automated verdict.
+      Which content pages should a client's SEO team review first for refresh? This paper uses
+      FlyRank's pseudonymized internship warehouse, 9.8 million daily search-performance rows
+      across 44 clients drawn from one month (March 2026), to build a transparent rule based on
+      click-through rate and search volume, and to test three learned models (logistic
+      regression, random forest, gradient boosting) against it under a client-grouped validation
+      split. None of the three models outperformed the rule at any evaluated cutoff, and the
+      strongest model's held-out ROC-AUC (0.58) was only marginally above chance. The rule, and a
+      five-category action list derived from it, form the basis of this paper's content-review
+      recommendations; the underperforming models do not. The intended use is decision support
+      for a human reviewer, not an automated decision.
     </p>
   </section>
 
   <section id="intro">
-    <h2><span class="num">§1</span> Introduction</h2>
+    <h2><span class="num">1.</span>Introduction</h2>
     <p>
-      A content team managing a large site portfolio has more candidate pages for review than
-      time to review them. In the slice studied here, an average client has hundreds of pages
-      that could plausibly need attention this cycle — nobody opens all of them by hand. The
-      practical decision is not "is this page declining" in the abstract; it's <em>"of everything
-      on my desk, what do I open first, and why?"</em>
+      A content team managing a large site portfolio typically has more candidate pages for
+      review than time available to review them. In the data studied here, an average client has
+      hundreds of pages that could plausibly need attention in a given cycle, far more than a
+      reviewer can open individually. The operative question is not whether a given page is
+      declining in the abstract, but which pages should be reviewed first, and on what basis.
     </p>
     <p>
-      That's a ranking problem, not a classification problem, and it changes what "good" means.
-      A model that separates classes well in aggregate is not automatically useful if its top-10
-      picks are wrong more often than a simple rule's top-10 picks — and that distinction is
-      exactly what this paper tests.
+      This is a ranking problem rather than a classification problem, and the distinction matters
+      for evaluation. A model that separates classes well on average is not necessarily useful if
+      its highest-ranked pages are wrong more often than a simple rule's highest-ranked pages.
+      That comparison, precision at a fixed cutoff rather than accuracy over the full population,
+      is the central test in this paper.
     </p>
-    <div class="callout">
-      <strong>The decision this supports:</strong> given a pool of existing content, rank pages
-      by <em>demand × risk of decline</em>, attach a reason a human can check in one glance, and
-      hand off a queue sized to real review capacity — not a flat, unranked list of everything
-      that looks slightly off.
-    </div>
+    <blockquote>
+      The decision under study: given an existing pool of content, rank pages by demand and by
+      risk of decline, attach a reason a reviewer can check quickly, and produce a queue sized to
+      realistic review capacity.
+    </blockquote>
   </section>
 
   <section id="data">
-    <h2><span class="num">§2</span> Data</h2>
+    <h2><span class="num">2.</span>Data</h2>
     <p>
-      The dataset is the <code>FlyRank/internship-warehouse</code> release on Hugging Face —
-      gated, pseudonymized production search data. This study uses
+      The dataset is the <code>FlyRank/internship-warehouse</code> release on Hugging Face, a
+      gated and pseudonymized production search dataset. This study uses
       <code>fact_content_daily_performance</code>, filtered to the <code>month=2026-03</code>
-      partition: a mid-panel month, chosen deliberately. The release's final month (June 2026)
-      is a sealed holdout for this internship track and was never queried while building this
-      work.
+      partition, a mid-panel month chosen deliberately. The release's final month (June 2026) is
+      a sealed holdout for this internship track and was not queried in the course of this work.
     </p>
-    <div class="stat-row">
-      <div class="stat"><div class="n">9,841,378</div><div class="label">daily rows, March 2026</div></div>
-      <div class="stat"><div class="n">44</div><div class="label">pseudonymized clients</div></div>
-      <div class="stat"><div class="n">150,675</div><div class="label">(client, page) pairs with impressions</div></div>
-      <div class="stat"><div class="n">0</div><div class="label">duplicate grain keys (verified)</div></div>
-    </div>
+    <table class="stat-table">
+      <tr><td class="n">9,841,378</td><td class="label">daily rows, March 2026</td></tr>
+      <tr><td class="n">44</td><td class="label">pseudonymized clients</td></tr>
+      <tr><td class="n">150,675</td><td class="label">client&ndash;page pairs with recorded impressions</td></tr>
+      <tr><td class="n">0</td><td class="label">duplicate grain keys, verified directly</td></tr>
+    </table>
     <p>
-      <strong>Grain:</strong> one row = one (client, content item, day) — verified by grouping on
-      the full key and confirming zero duplicates. <strong>Window:</strong> the month is split
-      internally at day 15 — days 1&ndash;15 form the feature window, days 16&ndash;31 form the
-      label window — giving a genuine past&rarr;future split inside a single month, rather than a
-      same-window proxy.
+      <strong>Grain.</strong> One row corresponds to one client, content item, and day,
+      confirmed by grouping on the full key and checking for duplicates. <strong>Window.</strong>
+      The month is split at day 15: days 1 through 15 form the feature window and days 16 through
+      31 form the label window. This gives a genuine past-to-future split within a single month,
+      rather than a same-window construction.
     </p>
-    <h3>Excluded, and why</h3>
+    <h3>Excluded fields, and the reason</h3>
     <ul>
       <li><strong>GA4 engagement columns.</strong> Only 4.2% of March rows have
-        <code>ga4_data_available = TRUE</code>; a raw GA4 feature would mostly encode "does this
-        client have GA4 wired up," not real engagement.</li>
-      <li><strong>Any raw name, domain, URL, or query.</strong> Not present in the release to
-        begin with. Only pseudonym hash IDs (<code>client_hash_id</code>,
-        <code>content_hash_id</code>) are used, strictly for grouping and joining — never as
-        model features.</li>
+        <code>ga4_data_available = TRUE</code>. A raw GA4 feature would largely encode whether a
+        client has GA4 configured, not engagement itself.</li>
+      <li><strong>Any raw name, domain, URL, or query.</strong> None appear in the release. Only
+        pseudonymous hash identifiers (<code>client_hash_id</code>, <code>content_hash_id</code>)
+        are used, and only for grouping and joins, never as model features.</li>
       <li><strong>FlyRank's own product flags</strong> (health score, quick-win tags). Not
-        shipped in this dataset by design — using a product's own decision flag as a model
-        feature would be circular, teaching the model to reproduce an existing rule rather than
-        find anything new.</li>
+        included in this dataset by design. Using a product's existing decision flag as a model
+        feature would be circular: the model would learn to reproduce an existing rule rather
+        than identify an independent pattern.</li>
     </ul>
   </section>
 
   <section id="method">
-    <h2><span class="num">§3</span> Methodology</h2>
+    <h2><span class="num">3.</span>Methodology</h2>
 
     <h3>Label</h3>
     <p>
       <code>is_declining = imp_last &lt; 0.8 &times; imp_prev</code>, where <code>imp_prev</code>
-      sums Search Console impressions over days 1&ndash;15 and <code>imp_last</code> sums them
-      over days 16&ndash;31. This is a proxy for "losing search visibility," not a confirmed
-      real-world outcome measured across months — but it is a genuine past&rarr;future split,
-      which the starter dataset's own same-window trend label is not.
+      sums Search Console impressions over days 1 through 15 and <code>imp_last</code> sums them
+      over days 16 through 31. This is a proxy for declining visibility rather than a confirmed
+      outcome measured across months, but it is a genuine past-to-future split rather than a
+      same-window construction.
     </p>
 
     <h3>Features</h3>
-    <p>Five features, all closed over the feature window only:</p>
+    <p>Five features, computed only over the feature window:</p>
     <ul>
-      <li><code>imp_prev</code>, <code>clk_prev</code> — impressions and clicks, days 1&ndash;15</li>
-      <li><code>ctr_prev</code> — clicks &divide; impressions, days 1&ndash;15</li>
-      <li><code>avg_position_prev</code> — mean Search Console position, days 1&ndash;15</li>
-      <li><code>active_days_prev</code> — days with any impressions, out of 15</li>
+      <li><code>imp_prev</code>, <code>clk_prev</code>: impressions and clicks, days 1&ndash;15</li>
+      <li><code>ctr_prev</code>: clicks divided by impressions, days 1&ndash;15</li>
+      <li><code>avg_position_prev</code>: mean Search Console position, days 1&ndash;15</li>
+      <li><code>active_days_prev</code>: number of days with any impressions, out of 15</li>
     </ul>
-    <p><code>imp_last</code> is never a feature — it only builds the label.</p>
+    <p><code>imp_last</code> is never used as a feature; it is used only to construct the label.</p>
 
     <h3>Baseline</h3>
     <p>
-      A transparent, hand-written rule: <code>score = imp_prev &times; max(0,
-      expected_ctr_for_position_tier &minus; ctr_prev)</code>, applied only where
-      <code>imp_prev &ge; 100</code> and <code>0 &lt; avg_position_prev &le; 20</code>. Before
-      trusting it, two signals behind it were bucket-tested against the label:
+      A transparent rule: <code>score = imp_prev &times; max(0, expected_ctr_for_position_tier
+      &minus; ctr_prev)</code>, applied only where <code>imp_prev &ge; 100</code> and
+      <code>0 &lt; avg_position_prev &le; 20</code>. Two signals underlying the rule were tested
+      against the label before it was adopted.
     </p>
     <div class="table-scroll">
-    <table>
-      <thead><tr><th>Signal</th><th>Comparison</th><th>n</th><th>Verdict</th></tr></thead>
+    <table class="data">
+      <thead><tr><th>Signal</th><th>Comparison</th><th>n</th><th>Result</th></tr></thead>
       <tbody>
-        <tr><td>CTR vs. position</td><td>33.7% decline (low-CTR) vs. 20.4% (high-CTR)</td><td>~31,000 each</td><td><span class="tag">CONFIRMED</span></td></tr>
-        <tr><td>Prior volume</td><td>40.2% decline (low-volume tercile) &rarr; 28.3% (high-volume tercile)</td><td>150,675</td><td><span class="tag">CONFIRMED</span></td></tr>
+        <tr><td>CTR relative to position</td><td>33.7% decline rate (low CTR) vs. 20.4% (high CTR)</td><td>~31,000 each</td><td>confirmed</td></tr>
+        <tr><td>Prior search volume</td><td>40.2% decline rate (lowest tercile) to 28.3% (highest tercile)</td><td>150,675</td><td>confirmed</td></tr>
       </tbody>
     </table>
     </div>
 
     <h3>Models</h3>
     <p>
-      Logistic Regression and Random Forest, with Gradient Boosting tried as a stretch — the
-      same five features, evaluated with <strong>precision@K</strong> rather than accuracy,
-      because the real decision is "review the top K first," not "classify everyone correctly."
+      Logistic regression and random forest are the primary comparison models, with gradient
+      boosting included as an additional check. All three use the same five features and are
+      evaluated with precision at K rather than accuracy, since the underlying decision concerns
+      the top K candidates for review, not classification of the full population.
     </p>
 
     <h3>Validation design</h3>
     <p>
-      <code>GroupShuffleSplit</code> on <code>client_hash_id</code> — grouped, not random by
-      row. A random row split would let the model see other pages from the same client during
-      training and partly memorize the client rather than learn the pattern.
+      <code>GroupShuffleSplit</code> on <code>client_hash_id</code>: a grouped split, not a random
+      split by row. A random row split would allow the model to see other pages from the same
+      client during training, risking memorization of client-level characteristics rather than
+      the intended pattern.
     </p>
 
     <h3>Leakage checks</h3>
     <p>
-      The feature/label timeline is drawn and enforced (feature window strictly precedes label
-      window); the population filter (<code>imp_prev &gt; 0</code>) uses only the feature
-      window; no product flags appear anywhere. A direct confession test — add the exact future
-      ratio the label is computed from, watch the score jump, remove it — was run on the final
-      feature set:
+      The feature and label windows were checked directly for overlap: features are computed only
+      from the window preceding the label. The row-selection filter (<code>imp_prev &gt; 0</code>)
+      uses only the feature window. No product-decision flags are used as features. A direct test
+      was also run: the exact ratio used to construct the label was added to the feature set, the
+      held-out score rose accordingly, and it returned to the baseline value once the feature was
+      removed.
     </p>
-    <div class="callout">
-      Random Forest test ROC-AUC: <strong>0.578</strong> without the suspect feature &rarr;
-      <strong>1.000</strong> with it added &rarr; back to <strong>0.578</strong> once removed.
-      Exactly the pattern a genuine leak produces — confirming the final feature set is clean.
-    </div>
+    <blockquote>
+      Random forest test ROC-AUC: 0.578 without the added feature, 1.000 with it included, and
+      0.578 again once it was removed. This is the expected signature of label leakage, and its
+      absence in the final feature set was confirmed by this test.
+    </blockquote>
   </section>
 
   <section id="results">
-    <h2><span class="num">§4</span> Results</h2>
-    <div class="callout finding">
-      <strong>Headline finding (negative result):</strong> on the honest client-grouped test
-      split, none of the three trained models beat the hand-written baseline rule at any
-      evaluated cutoff. The baseline wins or ties every column.
-    </div>
+    <h2><span class="num">4.</span>Results</h2>
+    <p>
+      The central result of this study is negative. On the grouped test split, none of the three
+      trained models outperformed the baseline rule at any evaluated cutoff; the rule matches or
+      exceeds every model at every value of K tested.
+    </p>
     <div class="table-scroll">
-    <table>
+    <table class="data">
       <thead>
         <tr><th>Method</th><th>P@10</th><th>P@20</th><th>P@50</th><th>P@100</th></tr>
       </thead>
       <tbody>
         <tr class="win"><td>Baseline rule</td><td>0.50</td><td>0.60</td><td>0.56</td><td>0.54</td></tr>
-        <tr><td>Logistic Regression</td><td>0.40</td><td>0.45</td><td>0.38</td><td>0.42</td></tr>
-        <tr><td>Random Forest</td><td>0.30</td><td>0.35</td><td>0.44</td><td>0.45</td></tr>
-        <tr><td>Gradient Boosting</td><td>0.50</td><td>0.50</td><td>0.50</td><td>0.44</td></tr>
+        <tr><td>Logistic regression</td><td>0.40</td><td>0.45</td><td>0.38</td><td>0.42</td></tr>
+        <tr><td>Random forest</td><td>0.30</td><td>0.35</td><td>0.44</td><td>0.45</td></tr>
+        <tr><td>Gradient boosting</td><td>0.50</td><td>0.50</td><td>0.50</td><td>0.44</td></tr>
       </tbody>
     </table>
     </div>
-    <p style="font-size:0.85rem;color:var(--text-soft)">
-      Test base rate: 0.366 (14,426 rows, 11 held-out clients). Random Forest's own held-out
-      ROC-AUC: 0.578.
+    <p style="font-size:0.85rem;color:var(--text-soft);font-family:-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;">
+      Test base rate: 0.366 (14,426 rows, 11 held-out clients). Random forest held-out ROC-AUC: 0.578.
     </p>
     <figure>
-      <img src="img/model_vs_baseline.png" alt="Bar chart comparing precision@10/20/50/100 for the baseline rule against three trained models, with a dashed base-rate line">
-      <figcaption>The baseline rule (blue) meets or beats every trained model at every cutoff. The dashed line is the test-set base rate — the floor any method must clear to say anything at all.</figcaption>
+      <img src="img/model_vs_baseline.png" alt="Bar chart comparing precision at 10, 20, 50 and 100 for the baseline rule against three trained models, with a dashed base-rate line">
+      <figcaption>Figure 1. The baseline rule (leftmost bar in each group) matches or exceeds every
+        trained model at every cutoff tested. The dashed line marks the test-set base rate.</figcaption>
     </figure>
     <p>
-      This is reported as the finding, not softened: <strong>added model complexity did not
-      earn its keep here.</strong> Five basic features and 11 held-out clients weren't enough
-      to out-rank a rule built on two already-confirmed signals. That is a legitimate,
-      publishable result — a well-measured "no" is worth more than an inflated "yes."
+      Added model complexity did not improve on the rule under these conditions. Five features and
+      eleven held-out clients were not sufficient for a learned model to outperform a rule built
+      on two previously confirmed signals. This result is reported directly rather than
+      reinterpreted, on the view that a well-measured null result is more useful than an inflated
+      positive one.
     </p>
   </section>
 
   <section id="limits">
-    <h2><span class="num">§5</span> Limitations &amp; Honest Framing</h2>
-    <ul class="limits-list">
-      <li><strong>One mid-panel month.</strong> Every number here comes from March 2026 only —
-        not checked against another month, a different season, or the sealed final month.</li>
-      <li><strong>One proxy label.</strong> <code>is_declining</code> is a within-month
-        impressions ratio, not a confirmed outcome measured across months.</li>
-      <li><strong>44 clients, one lane.</strong> Nothing here has been checked on other
-        clients, verticals, or refresh-scoring approaches.</li>
-      <li><strong>~50% of rows have thin evidence</strong> (fewer than 15 of 15 active days in
-        the feature window) — a real feature of a mixed-traffic portfolio, not a data defect,
-        but it means roughly half the slice can't be scored with confidence by this method.</li>
-      <li><strong>Decision-support only, never causal.</strong> "Review this page" is not
-        "refreshing it will recover its traffic" — that claim needs a controlled experiment
-        (a before/after refresh test), which this cross-sectional data cannot provide.</li>
-      <li><strong>Retrospective, not a live forecast.</strong> The model and rule are fit and
-        scored on the same March slice as a demonstration of the mechanics, not a claim about
-        future months.</li>
+    <h2><span class="num">5.</span>Limitations</h2>
+    <ul>
+      <li><strong>Single month.</strong> All results are drawn from March 2026 only and have not
+        been checked against a different month, a different season, or the sealed final month.</li>
+      <li><strong>Proxy label.</strong> <code>is_declining</code> is a within-month ratio of
+        impressions and has not been validated as an outcome measured across months.</li>
+      <li><strong>44 clients, one lane.</strong> These results have not been tested on other
+        clients, other verticals, or alternative scoring approaches.</li>
+      <li><strong>Limited evidence for roughly half the data.</strong> Approximately half of all
+        rows have fewer than 15 of 15 active days in the feature window. This reflects the
+        underlying traffic distribution rather than a data quality problem, but it means these
+        rows cannot be scored with the same confidence as the rest.</li>
+      <li><strong>Decision support, not a causal claim.</strong> A recommendation to review a page
+        is not equivalent to a claim that refreshing it will recover lost traffic. Establishing
+        that would require a controlled experiment, which this cross-sectional dataset cannot
+        provide.</li>
+      <li><strong>Retrospective evaluation.</strong> The rule and the models in Section 4 are fit
+        and evaluated on the same month as a demonstration of method, not as a forecast of future
+        performance.</li>
+      <li><strong>The model did not outperform the baseline.</strong> This is reported as a
+        substantive finding of the study, not as a limitation to be explained away.</li>
     </ul>
   </section>
 
   <section id="recs">
-    <h2><span class="num">§6</span> Ranked Recommendations</h2>
+    <h2><span class="num">6.</span>Recommendations</h2>
     <p>
-      Five archetypes, each a reason code with one action — built entirely from the validated
-      baseline and model above, deliberately <em>not</em> from unvalidated clustering. The
-      ranking key inside each tier lets an editor open the queue and know exactly why each page
-      is there.
+      Five categories, each associated with one recommended action, derived from the baseline
+      rule and the model evaluated in Section 4. No additional clustering was introduced for this
+      section.
     </p>
     <div class="table-scroll">
-    <table>
+    <table class="data">
       <thead>
-        <tr><th>Archetype</th><th>n</th><th>Decline rate</th><th>Action</th><th>Tier</th></tr>
+        <tr><th>Category</th><th>n</th><th>Decline rate</th><th>Action</th><th>Tier</th></tr>
       </thead>
       <tbody>
         <tr><td><code>low_ctr_for_position</code></td><td>30,974</td><td>33.7%</td><td>review_ctr_fix</td><td>1</td></tr>
@@ -450,54 +445,55 @@
     </table>
     </div>
     <figure>
-      <img src="img/archetype_decline_rates.png" alt="Horizontal bar chart of decline rate by archetype, with the high_volume_poor_position archetype highlighted in red as the highest">
-      <figcaption><code>high_volume_poor_position</code> (red) has the highest measured decline
-        rate of any archetype — 52.9% vs. a 32.6% base rate. An earlier working note from this
-        project's model-error analysis had called this pattern "already at a floor" based on 3
-        examples; checked against the full archetype population, that assumption was wrong, and
-        is corrected here rather than carried forward.</figcaption>
+      <img src="img/archetype_decline_rates.png" alt="Horizontal bar chart of decline rate by category, with the high_volume_poor_position category highlighted as the highest">
+      <figcaption>Figure 2. The <code>high_volume_poor_position</code> category has the highest
+        measured decline rate of the five (52.9%, against a base rate of 32.6%). An earlier
+        analysis of individual model errors suggested, on the basis of three examples, that pages
+        in this category were unlikely to decline further. Measured against the complete
+        category (n = 3,372), that does not hold, and is corrected here.</figcaption>
     </figure>
-    <h3>What a human must check before acting</h3>
+    <h3>Required human review</h3>
     <ul>
-      <li>Read the actual page — a flag says the math looks off, not why (branded/navigational
-        query? a competitor's rich snippet? real content decay?).</li>
-      <li>Rule out consolidation, seasonality, and noise before treating a decline as real and
-        page-specific.</li>
+      <li>A flag indicates that a metric pattern looks unusual, not why. A reviewer should check
+        whether the query is branded or navigational, whether a competitor's snippet is capturing
+        the click, and whether the content itself has degraded.</li>
+      <li>Consolidation, seasonality, and noise should be ruled out before a decline is treated as
+        real and specific to the page.</li>
     </ul>
-    <h3>What should never be automated</h3>
+    <h3>Exclusions from automation</h3>
     <ul>
-      <li>Never auto-publish a rewritten title or snippet — a candidate for human edit, not a
-        diff to ship.</li>
-      <li>Never auto-prune, redirect, or delete a page from this queue — near-irreversible
-        actions that need a content-strategy sign-off this data can't provide.</li>
-      <li>Never treat the model's probability or the rule's score as ground truth of cause —
-        both rank candidates for review, and §4 already shows the model underperforms the rule
-        here.</li>
-      <li>Never surface a real client name, URL, domain, or raw query in any downstream
-        report.</li>
+      <li>Rewritten titles or snippets should not be published without review. A flagged page is
+        a candidate for editing, not a change ready to ship.</li>
+      <li>Pages should not be pruned, redirected, or deleted automatically on the basis of this
+        queue. These actions are largely irreversible and require a content-strategy decision
+        this data does not support.</li>
+      <li>Model probabilities and rule scores should not be treated as evidence of cause. Both are
+        used only to rank candidates for review, and Section 4 shows the model underperforming
+        the rule in this setting.</li>
+      <li>No client name, URL, domain, or query should appear in any report produced from this
+        work.</li>
     </ul>
   </section>
 
   <section id="repro">
-    <h2><span class="num">§7</span> Reproducibility</h2>
+    <h2><span class="num">7.</span>Reproducibility</h2>
     <p>
-      Every number on this page traces back to a committed notebook or a committed metrics
-      file — nothing here was computed once and pasted from memory.
+      Each number in this paper is drawn from a committed notebook or a committed metrics file.
     </p>
     <div class="repro-links">
-      <a href="https://github.com/Yuguda999/flyrank-ml-internship-starter" target="_blank" rel="noopener">→ Full repository</a>
-      <a href="https://github.com/Yuguda999/flyrank-ml-internship-starter/blob/main/work/notebooks/capstone.ipynb" target="_blank" rel="noopener">→ capstone.ipynb — the notebook this page mirrors</a>
-      <a href="https://github.com/Yuguda999/flyrank-ml-internship-starter/blob/main/work/notebooks/w04_baseline_score.ipynb" target="_blank" rel="noopener">→ w04_baseline_score.ipynb — baseline rule, signal checks</a>
-      <a href="https://github.com/Yuguda999/flyrank-ml-internship-starter/blob/main/work/notebooks/w05_model.ipynb" target="_blank" rel="noopener">→ w05_model.ipynb — model vs. baseline, grouped split</a>
-      <a href="https://github.com/Yuguda999/flyrank-ml-internship-starter/blob/main/work/notebooks/w06_validation_audit.ipynb" target="_blank" rel="noopener">→ w06_validation_audit.ipynb — leakage audit, before/after split, claim rewrite</a>
-      <a href="https://github.com/Yuguda999/flyrank-ml-internship-starter/blob/main/work/notebooks/w07_action_playbook.ipynb" target="_blank" rel="noopener">→ w07_action_playbook.ipynb — the five-archetype playbook</a>
-      <a href="https://github.com/Yuguda999/flyrank-ml-internship-starter/blob/main/work/outputs/model_vs_baseline_metrics.json" target="_blank" rel="noopener">→ model_vs_baseline_metrics.json — the §4 receipt</a>
-      <a href="https://github.com/Yuguda999/flyrank-ml-internship-starter/blob/main/work/outputs/action_playbook_metrics.json" target="_blank" rel="noopener">→ action_playbook_metrics.json — the §6 receipt</a>
+      <a href="https://github.com/Yuguda999/flyrank-ml-internship-starter" target="_blank" rel="noopener">Repository</a>
+      <a href="https://github.com/Yuguda999/flyrank-ml-internship-starter/blob/main/work/notebooks/capstone.ipynb" target="_blank" rel="noopener">capstone.ipynb : the notebook this paper mirrors</a>
+      <a href="https://github.com/Yuguda999/flyrank-ml-internship-starter/blob/main/work/notebooks/w04_baseline_score.ipynb" target="_blank" rel="noopener">w04_baseline_score.ipynb : baseline rule and signal checks</a>
+      <a href="https://github.com/Yuguda999/flyrank-ml-internship-starter/blob/main/work/notebooks/w05_model.ipynb" target="_blank" rel="noopener">w05_model.ipynb : model versus baseline, grouped split</a>
+      <a href="https://github.com/Yuguda999/flyrank-ml-internship-starter/blob/main/work/notebooks/w06_validation_audit.ipynb" target="_blank" rel="noopener">w06_validation_audit.ipynb : leakage audit and split comparison</a>
+      <a href="https://github.com/Yuguda999/flyrank-ml-internship-starter/blob/main/work/notebooks/w07_action_playbook.ipynb" target="_blank" rel="noopener">w07_action_playbook.ipynb : the recommendation categories</a>
+      <a href="https://github.com/Yuguda999/flyrank-ml-internship-starter/blob/main/work/outputs/model_vs_baseline_metrics.json" target="_blank" rel="noopener">model_vs_baseline_metrics.json : Section 4 data</a>
+      <a href="https://github.com/Yuguda999/flyrank-ml-internship-starter/blob/main/work/outputs/action_playbook_metrics.json" target="_blank" rel="noopener">action_playbook_metrics.json : Section 6 data</a>
     </div>
     <p style="margin-top:16px">
-      All random seeds are fixed at <code>42</code> and stated in each notebook. Re-running any
-      notebook top-to-bottom against the same <code>month=2026-03</code> partition reproduces
-      the tables on this page.
+      Random seeds are fixed at <code>42</code> throughout and stated in each notebook.
+      Re-running any notebook against the same <code>month=2026-03</code> partition reproduces
+      the tables in this paper.
     </p>
   </section>
 
@@ -505,11 +501,11 @@
 
 <footer id="credit" class="wrap">
   <p>
-    <strong>Acknowledgments &amp; data credit.</strong> Built on the FlyRank ML Internship
-    dataset — a pseudonymized production search-performance release provided for this
-    internship track. Data source and program: <a href="https://flyrank.ai" target="_blank" rel="noopener">flyrank.ai</a>.
+    <strong>Acknowledgments and data credit.</strong> This work is built on the FlyRank ML
+    Internship dataset, a pseudonymized production search-performance release made available for
+    this internship program. Data source: <a href="https://flyrank.ai" target="_blank" rel="noopener">flyrank.ai</a>.
   </p>
-  <p>This page is an independent research write-up produced as part of that internship; it is not an official FlyRank publication.</p>
+  <p>This is an independent research write-up completed as part of that internship program and is not an official FlyRank publication.</p>
 </footer>
 
 </body>
