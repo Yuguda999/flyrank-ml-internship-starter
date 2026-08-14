@@ -217,7 +217,10 @@
   <section id="abstract">
     <h2>Abstract</h2>
     <p class="lede">
-      Which content pages should a client's SEO team review first for refresh? This paper uses
+      FlyRank publishes and maintains content directly on client websites, and that content
+      predictably loses search visibility after publication as rankings and clicks fall over
+      time. With far more pages needing review at any moment than a team can examine
+      individually, the operational question is which pages to review first. This paper uses
       FlyRank's pseudonymized internship warehouse, 9.8 million daily search-performance rows
       across 44 clients drawn from one month (March 2026), to build a transparent rule based on
       click-through rate and search volume, and to test three learned models (logistic
@@ -233,11 +236,21 @@
   <section id="intro">
     <h2><span class="num">1.</span>Introduction</h2>
     <p>
-      A content team managing a large site portfolio typically has more candidate pages for
-      review than time available to review them. In the data studied here, an average client has
-      hundreds of pages that could plausibly need attention in a given cycle, far more than a
-      reviewer can open individually. The operative question is not whether a given page is
-      declining in the abstract, but which pages should be reviewed first, and on what basis.
+      FlyRank operates as a content-as-infrastructure platform: it researches, writes, and
+      publishes content onto client websites, then monitors search performance and optimizes over
+      time. A structural consequence of operating at this scale is that a team managing many
+      clients' content has more candidate pages for review than time available to review them
+      individually. In the data studied here, an average client has hundreds of pages that could
+      plausibly need attention in a given cycle. FlyRank's existing product already addresses part
+      of this with hand-written flags, such as a health score and quick-win tags: rule-based logic
+      that runs in production but is built from thresholds chosen by hand rather than learned from
+      data.
+    </p>
+    <p>
+      This paper asks a narrow, testable question inside that gap: does a learned ranking model
+      improve on a comparably transparent, hand-written rule for deciding which pages to review
+      first? The operative question for any given page is not whether it is declining in the
+      abstract, but whether it belongs near the top of a reviewer's queue, and why.
     </p>
     <p>
       This is a ranking problem rather than a classification problem, and the distinction matters
